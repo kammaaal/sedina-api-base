@@ -1,59 +1,98 @@
-# sedina-api-base
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+</p>
 
-Proyek ini merupakan base API (ditulis dalam bahasa PHP) untuk aplikasi Sedina. Tujuan utama ke depannya adalah melakukan mapping semua API yang ada di dalam proyek ini dan melakukan **refactor ke NestJS (TypeScript)**.
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-## Mapping API per Modul / Fitur
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-Berikut adalah daftar API yang saat ini tersedia dan dikelompokkan berdasarkan modul/fitur untuk mempermudah proses refactoring nantinya:
+## Description
 
-### 1. Auth & Session
-- `login.php` - Proses login pengguna
-- `check_session.php` - Memeriksa status sesi pengguna
-- `get_session.php` - Mengambil data sesi pengguna saat ini
-- `update_password.php` - Mengubah kata sandi pengguna
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-### 2. Kehadiran (Presensi)
-- `clockin.php` - Proses mencatat waktu masuk (clock-in)
-- `cek_clockin.php` - Memeriksa status clock-in hari ini
-- `get_riwayat_kehadiran.php` - Mengambil data riwayat kehadiran
+## Project setup
 
-### 3. Agenda
-- `get_agenda (1).php` - Mengambil daftar agenda
-- `get_agenda_bersamaan.php` - Mengambil data agenda yang memiliki waktu bersamaan
-- `get_agenda_user.php` - Mengambil agenda untuk pengguna tertentu
-- `get_detail_agenda.php` - Mengambil detail dari suatu agenda
-- `get_target_agenda.php` - Mengambil target peserta agenda
-- `tambah_agenda.php` - Menambahkan agenda baru
+```bash
+$ npm install
+```
 
-### 4. Todo (Tugas)
-- `get_todo.php` - Mengambil daftar tugas (todo)
-- `tambah_todo.php` - Menambahkan tugas baru
-- `update_todo.php` - Memperbarui data tugas
-- `update_todo_status.php` - Memperbarui status selesai/belum dari suatu tugas
-- `hapus_todo.php` - Menghapus tugas
+## Compile and run the project
 
-### 5. Anggota & Profil
-- `get_anggota (1).php` - Mengambil daftar anggota
-- `get_master_anggota.php` - Mengambil master data anggota
-- `tambah_anggota.php` - Menambahkan anggota baru
-- `get_profile (1).php` - Mengambil profil anggota
+```bash
+# development
+$ npm run start
 
-### 6. Berita
-- `get_berita.php` - Mengambil daftar berita
-- `get_berita_admin.php` - Mengambil daftar berita untuk admin
-- `tambah_berita.php` - Menambahkan berita baru
+# watch mode
+$ npm run start:dev
 
-### 7. Pesan & Notifikasi
-- `get_pesan (1).php` - Mengambil daftar pesan
-- `tambah_pesan.php` - Mengirim atau menambahkan pesan baru
-- `update_dilihat.php` - Memperbarui status pesan/notifikasi menjadi telah dilihat
+# production mode
+$ npm run start:prod
+```
 
-### 8. Catatan
-- `get_catatan.php` - Mengambil catatan
-- `save_catatan.php` - Menyimpan catatan baru atau memperbarui catatan
+## Run tests
 
-### 9. Core & Konfigurasi
-- `koneksi.php` - File konfigurasi koneksi ke database
+```bash
+# unit tests
+$ npm run test
 
----
-*Catatan: File dengan angka di dalam kurung seperti `(1)` mungkin merupakan duplikasi atau penamaan file sementara dan perlu diidentifikasi lebih lanjut saat proses pemindahan ke NestJS.*
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
+
+## Deployment
+
+When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+
+If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+
+```bash
+$ npm install -g @nestjs/mau
+$ mau deploy
+```
+
+With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+
+## Resources
+
+Check out a few resources that may come in handy when working with NestJS:
+
+- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
+- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
+- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
+- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
+- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
+- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
+- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
+- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+
+## Support
+
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+
+## Stay in touch
+
+- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
+
+## License
+
+Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

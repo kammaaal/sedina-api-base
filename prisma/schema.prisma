@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id        String   @id @default(uuid())
+  nama_role String   @unique // e.g. superadmin, setwan, anggota
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model Jabatan {
+  id           Int      @id @default(autoincrement())
+  nama_jabatan String
+  users        User[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("jabatan")
+}
+
+model Fraksi {
+  id          Int      @id @default(autoincrement())
+  nama_fraksi String
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("fraksi")
+}
+
+model Komisi {
+  id          Int      @id @default(autoincrement())
+  nama_komisi String
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("komisi")
+}
+
+model Akd {
+  id        Int       @id @default(autoincrement())
+  nama_akd  String
+  users     UserAkd[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("akd")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  nama       String
+  email      String    @unique
+  password   String
+  foto       String?
+  role_id    String
+  jabatan_id Int?
+  fraksi_id  Int?
+  komisi_id  Int?
+  role       Role      @relation(fields: [role_id], references: [id])
+  jabatan    Jabatan?  @relation(fields: [jabatan_id], references: [id])
+  fraksi     Fraksi?   @relation(fields: [fraksi_id], references: [id])
+  komisi     Komisi?   @relation(fields: [komisi_id], references: [id])
+  akds       UserAkd[]
+  kehadiran  Kehadiran[]
+  berita     Berita[]
+  pesan      Pesan[]
+  todos      TodoList[]
+  agendaCatatan AgendaCatatan[]
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model UserAkd {
+  id      Int  @id @default(autoincrement())
+  user_id Int
+  akd_id  Int
+  user    User @relation(fields: [user_id], references: [id])
+  akd     Akd  @relation(fields: [akd_id], references: [id])
+
+  @@unique([user_id, akd_id])
+  @@map("user_akd")
+}
+
+model Agenda {
+  id            Int            @id @default(autoincrement())
+  judul         String
+  deskripsi     String?        @db.Text
+  lokasi        String?
+  tanggal       DateTime       @db.Date
+  waktu_mulai   DateTime       @db.Time
+  waktu_selesai DateTime       @db.Time
+  tipe          String?        // e.g. Rapat Paripurna, dll
+  targets       AgendaTarget[]
+  kehadiran     Kehadiran[]
+  catatan       AgendaCatatan[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("agenda")
+}
+
+model AgendaTarget {
+  id          Int    @id @default(autoincrement())
+  agenda_id   Int
+  target_type String // e.g., komisi, fraksi, akd
+  target_id   Int
+  agenda      Agenda @relation(fields: [agenda_id], references: [id], onDelete: Cascade)
+
+  @@map("agenda_target")
+}
+
+model AgendaCatatan {
+  id        Int    @id @default(autoincrement())
+  agenda_id Int
+  user_id   Int
+  catatan   String @db.Text
+  agenda    Agenda @relation(fields: [agenda_id], references: [id], onDelete: Cascade)
+  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([agenda_id, user_id])
+  @@map("agenda_catatan")
+}
+
+model Kehadiran {
+  id        Int      @id @default(autoincrement())
+  agenda_id Int
+  user_id   Int
+  tanggal   DateTime @db.Date
+  jam       DateTime @db.Time
+  lokasi    String?
+  foto      String?  @db.Text
+  agenda    Agenda   @relation(fields: [agenda_id], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([agenda_id, user_id])
+  @@map("kehadiran")
+}
+
+model Berita {
+  id         Int      @id @default(autoincrement())
+  judul      String
+  isi        String   @db.Text
+  foto       String?
+  dilihat    Int      @default(0)
+  penulis_id Int
+  penulis    User     @relation(fields: [penulis_id], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("berita")
+}
+
+model Pesan {
+  id        Int      @id @default(autoincrement())
+  pengirim_id Int
+  penerima_id Int?   // null jika broadcast/group message
+  isi       String   @db.Text
+  pengirim  User     @relation(fields: [pengirim_id], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("pesan")
+}
+
+model TodoList {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  tugas     String
+  status    Int      @default(0) // 0 = belum, 1 = selesai
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("todo_list")
+}
