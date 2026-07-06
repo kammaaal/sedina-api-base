@@ -14,7 +14,7 @@ export class BeritaController {
   @CacheTTL(60000)
   async findAll() {
     const berita = await this.prisma.berita.findMany({
-      orderBy: { id: 'desc' }
+      orderBy: { id: 'desc' },
     });
 
     return { status: true, data: berita };

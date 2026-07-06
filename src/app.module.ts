@@ -16,10 +16,12 @@ import { BeritaModule } from './berita/berita.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 10,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],

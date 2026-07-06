@@ -15,12 +15,9 @@ export class AgendaController {
   async findAll() {
     const agendas = await this.prisma.agenda.findMany({
       include: {
-        targets: true
+        targets: true,
       },
-      orderBy: [
-        { tanggal: 'desc' },
-        { waktu_mulai: 'desc' }
-      ]
+      orderBy: [{ tanggal: 'desc' }, { waktu_mulai: 'desc' }],
     });
 
     return { status: true, data: agendas };

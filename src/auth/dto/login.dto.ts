@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class LoginDto {
   @IsEmail({}, { message: 'Format email tidak valid' })
@@ -9,4 +15,12 @@ export class LoginDto {
   @IsNotEmpty({ message: 'Password wajib diisi' })
   @MinLength(6, { message: 'Password minimal 6 karakter' })
   password: string;
+
+  @IsOptional()
+  @IsString()
+  device_id?: string;
+
+  @IsOptional()
+  @IsString()
+  browser_agent?: string;
 }

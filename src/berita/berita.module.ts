@@ -2,6 +2,6 @@ import { Module } from '@nestjs/common';
 import { BeritaController } from './berita.controller';
 
 @Module({
-  controllers: [BeritaController]
+  controllers: [BeritaController],
 })
 export class BeritaModule {}

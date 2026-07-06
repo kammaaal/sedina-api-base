@@ -15,21 +15,21 @@ export class UsersController {
     const users = await this.prisma.user.findMany({
       where: {
         role: {
-          nama_role: { notIn: ['superadmin', 'setwan'] }
-        }
+          nama_role: { notIn: ['superadmin', 'setwan'] },
+        },
       },
       include: {
         jabatan: true,
         fraksi: true,
         komisi: true,
         akds: {
-          include: { akd: true }
-        }
+          include: { akd: true },
+        },
       },
-      orderBy: { id: 'desc' }
+      orderBy: { id: 'desc' },
     });
 
-    const data = users.map(user => ({
+    const data = users.map((user) => ({
       id: user.id,
       nama: user.nama,
       email: user.email,
@@ -37,7 +37,7 @@ export class UsersController {
       jabatan: user.jabatan?.nama_jabatan || null,
       fraksi: user.fraksi?.nama_fraksi || null,
       komisi: user.komisi?.nama_komisi || null,
-      akd: user.akds.map(ua => ua.akd.nama_akd).join(', ')
+      akd: user.akds.map((ua) => ua.akd.nama_akd).join(', '),
     }));
 
     return { status: true, data };
