@@ -43,18 +43,18 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 
 ### 1. Auth (Autentikasi & Sesi)
 *File Legacy: `login.php`, `check_session.php`, `get_session.php`*
-- [ ] **DTO:** `LoginDto`.
-- [ ] **Controller:** Endpoint `/auth/login`, `/auth/session`.
-- [ ] **Service:** Validasi kredensial (bcrypt compare), generate JWT, kembalikan user profile dalam payload JWT.
-- [ ] **Security:** Rate limiting pada endpoint login menggunakan `@nestjs/throttler`.
+- [x] **DTO:** `LoginDto`.
+- [x] **Controller:** Endpoint `/auth/login`, `/auth/session`.
+- [x] **Service:** Validasi kredensial (bcrypt compare), generate JWT, kembalikan user profile dalam payload JWT.
+- [x] **Security:** Rate limiting pada endpoint login menggunakan `@nestjs/throttler`.
 
 ### 2. Users / Anggota
 *File Legacy: `get_profile (1).php`, `update_password.php`, `get_anggota (1).php`, `get_master_anggota.php`, `tambah_anggota.php`*
-- [ ] **DTO:** `CreateAnggotaDto`, `UpdatePasswordDto`.
-- [ ] **Controller:** `/users/profile`, `/users/password`, `/users/anggota`, `/users/master-anggota`.
-- [ ] **Service & Repository:** CRUD logic untuk data anggota. Hash password baru menggunakan bcrypt.
-- [ ] **RBAC:** Hanya `superadmin` / `setwan` yang dapat menambah anggota (`tambah_anggota`). `Anggota` hanya dapat melihat profil dan update password miliknya sendiri.
-- [ ] **Cache (Redis):** Cache endpoint `/users/master-anggota`.
+- [x] **DTO:** `CreateAnggotaDto`, `UpdatePasswordDto`.
+- [x] **Controller:** `/users/profile`, `/users/password`, `/users/anggota`, `/users/master-anggota`.
+- [x] **Service & Repository:** CRUD logic untuk data anggota. Hash password baru menggunakan bcrypt.
+- [x] **RBAC:** Hanya `superadmin` / `setwan` yang dapat menambah anggota (`tambah_anggota`). `Anggota` hanya dapat melihat profil dan update password miliknya sendiri.
+- [x] **Cache (Redis):** Cache endpoint `/users/master-anggota`.
 
 ### 3. Agenda
 *File Legacy: `get_agenda (1).php`, `get_agenda_user.php`, `get_agenda_bersamaan.php`, `get_detail_agenda.php`, `get_target_agenda.php`, `tambah_agenda.php`*
