@@ -1,4 +1,10 @@
-import { Controller, Post, Body, UseGuards, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { ClockinDto } from './dto/clockin.dto';
@@ -17,8 +23,8 @@ export class KehadiranController {
         agenda_id_user_id: {
           agenda_id: clockinDto.agenda_id,
           user_id: clockinDto.user_id,
-        }
-      }
+        },
+      },
     });
 
     if (existing) {
@@ -48,17 +54,17 @@ export class KehadiranController {
         tanggal: new Date(dateStr),
         jam: new Date(`1970-01-01T${now.toISOString().split('T')[1]}`),
         lokasi: clockinDto.lokasi,
-        foto: `uploads/${fileName}`
-      }
+        foto: `uploads/${fileName}`,
+      },
     });
 
     return {
       status: true,
       message: 'Berhasil clock-in',
       tanggal: dateStr,
-      jam: now.toISOString().split('T')[1].substring(0,8),
+      jam: now.toISOString().split('T')[1].substring(0, 8),
       lokasi: clockinDto.lokasi,
-      foto_url: `http://localhost:3000/uploads/${fileName}`
+      foto_url: `http://localhost:3000/uploads/${fileName}`,
     };
   }
 }

@@ -63,11 +63,13 @@ model User {
   email      String    @unique
   password   String
   foto       String?
-  role_id    String
-  jabatan_id Int?
-  fraksi_id  Int?
-  komisi_id  Int?
-  role       Role      @relation(fields: [role_id], references: [id])
+  role_id       String
+  jabatan_id    Int?
+  fraksi_id     Int?
+  komisi_id     Int?
+  device_id     String?
+  browser_agent String?
+  role          Role      @relation(fields: [role_id], references: [id])
   jabatan    Jabatan?  @relation(fields: [jabatan_id], references: [id])
   fraksi     Fraksi?   @relation(fields: [fraksi_id], references: [id])
   komisi     Komisi?   @relation(fields: [komisi_id], references: [id])
