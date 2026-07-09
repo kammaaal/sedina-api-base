@@ -64,11 +64,11 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 - [x] **RBAC:** Penambahan agenda dibatasi untuk role tertentu (misal: `setwan`).
 - [x] **Cache (Redis):** Cache endpoint list agenda umum.
 
-### 4. Kehadiran (Clock-in)
+### 4. Attendance (Clock-in)
 *File Legacy: `clockin.php`, `cek_clockin.php`, `get_riwayat_kehadiran.php`*
-- [ ] **DTO:** `ClockInDto`.
-- [ ] **Controller:** `/kehadiran/clockin`, `/kehadiran/status`, `/kehadiran/riwayat`.
-- [ ] **Service & Repository:** Pencatatan lokasi (lat/long) dan validasi waktu clock-in, memastikan user belum clock-in di hari/sesi yang sama.
+- [x] **DTO:** `ClockInDto`.
+- [x] **Controller:** `/attendance/clockin`, `/attendance/status`, `/attendance/history`.
+- [x] **Service & Repository:** Pencatatan lokasi (lat/long) dan validasi waktu clock-in, memastikan user belum clock-in di hari/sesi yang sama.
 
 ### 5. Berita
 *File Legacy: `get_berita.php`, `get_berita_admin.php`, `tambah_berita.php`, `update_dilihat.php`*

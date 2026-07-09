@@ -74,7 +74,7 @@ model User {
   fraksi     Fraksi?   @relation(fields: [fraksi_id], references: [id])
   komisi     Komisi?   @relation(fields: [komisi_id], references: [id])
   akds       UserAkd[]
-  kehadiran  Kehadiran[]
+  attendance Attendance[]
   berita     Berita[]
   pesan      Pesan[]
   todos      TodoList[]
@@ -107,7 +107,7 @@ model Agenda {
   waktu_selesai DateTime       @db.Time
   tipe          String?        // e.g. Rapat Paripurna, dll
   targets       AgendaTarget[]
-  kehadiran     Kehadiran[]
+  attendance    Attendance[]
   catatan       AgendaCatatan[]
 
   createdAt     DateTime       @default(now())
@@ -138,19 +138,19 @@ model AgendaCatatan {
   @@map("agenda_catatan")
 }
 
-model Kehadiran {
+model Attendance {
   id        Int      @id @default(autoincrement())
   agenda_id Int
   user_id   Int
-  tanggal   DateTime @db.Date
-  jam       DateTime @db.Time
-  lokasi    String?
-  foto      String?  @db.Text
+  date      DateTime @db.Date
+  time      DateTime @db.Time
+  location  String?
+  photo     String?  @db.Text
   agenda    Agenda   @relation(fields: [agenda_id], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@unique([agenda_id, user_id])
-  @@map("kehadiran")
+  @@map("attendance")
 }
 
 model Berita {
