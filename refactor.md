@@ -58,11 +58,11 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 
 ### 3. Agenda
 *File Legacy: `get_agenda (1).php`, `get_agenda_user.php`, `get_agenda_bersamaan.php`, `get_detail_agenda.php`, `get_target_agenda.php`, `tambah_agenda.php`*
-- [ ] **DTO:** `CreateAgendaDto`, `AgendaFilterDto`.
-- [ ] **Controller:** `/agenda`, `/agenda/:id`, `/agenda/user`, dll.
-- [ ] **Service & Repository:** Logic untuk mengambil agenda personal, agenda bersamaan, dan target agenda.
-- [ ] **RBAC:** Penambahan agenda dibatasi untuk role tertentu (misal: `setwan`).
-- [ ] **Cache (Redis):** Cache endpoint list agenda umum.
+- [x] **DTO:** `CreateAgendaDto`, `AgendaFilterDto`.
+- [x] **Controller:** `/agenda`, `/agenda/:id`, `/agenda/user`, dll.
+- [x] **Service & Repository:** Logic untuk mengambil agenda personal, agenda bersamaan, dan target agenda.
+- [x] **RBAC:** Penambahan agenda dibatasi untuk role tertentu (misal: `setwan`).
+- [x] **Cache (Redis):** Cache endpoint list agenda umum.
 
 ### 4. Kehadiran (Clock-in)
 *File Legacy: `clockin.php`, `cek_clockin.php`, `get_riwayat_kehadiran.php`*
