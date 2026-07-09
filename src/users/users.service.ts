@@ -26,17 +26,17 @@ export class UsersService {
     }
 
     return {
-      nama: user.nama,
+      name: user.name,
       email: user.email,
-      foto: user.foto,
+      photo: user.photo,
       role_id: user.role_id,
       fraksi_id: user.fraksi_id,
       komisi_id: user.komisi_id,
       jabatan_id: user.jabatan_id,
-      jabatan: user.jabatan?.nama_jabatan || '-',
-      fraksi: user.fraksi?.nama_fraksi || '-',
-      komisi: user.komisi?.nama_komisi || '-',
-      akd: user.akds.map((ua) => ua.akd.nama_akd),
+      jabatan: user.jabatan?.jabatan_name || '-',
+      fraksi: user.fraksi?.fraksi_name || '-',
+      komisi: user.komisi?.komisi_name || '-',
+      akd: user.akds.map((ua) => ua.akd.akd_name),
       panja: [], // placeholder if relations are added later
       pansus: [], // placeholder if relations are added later
     };
@@ -67,10 +67,10 @@ export class UsersService {
 
   async getMasterAnggota() {
     const [jabatan, komisi, fraksi, akd] = await Promise.all([
-      this.prisma.jabatan.findMany({ orderBy: { nama_jabatan: 'asc' } }),
-      this.prisma.komisi.findMany({ orderBy: { nama_komisi: 'asc' } }),
-      this.prisma.fraksi.findMany({ orderBy: { nama_fraksi: 'asc' } }),
-      this.prisma.akd.findMany({ orderBy: { nama_akd: 'asc' } }),
+      this.prisma.jabatan.findMany({ orderBy: { jabatan_name: 'asc' } }),
+      this.prisma.komisi.findMany({ orderBy: { komisi_name: 'asc' } }),
+      this.prisma.fraksi.findMany({ orderBy: { fraksi_name: 'asc' } }),
+      this.prisma.akd.findMany({ orderBy: { akd_name: 'asc' } }),
     ]);
 
     return {
@@ -91,7 +91,7 @@ export class UsersService {
     }
 
     const role = await this.prisma.role.findFirst({
-      where: { nama_role: 'Anggota Dewan (Anggota)' },
+      where: { role_name: 'Anggota Dewan (Anggota)' },
     });
 
     if (!role) {
@@ -103,10 +103,10 @@ export class UsersService {
 
     const newUser = await this.prisma.user.create({
       data: {
-        nama: dto.nama,
+        name: dto.nama,
         email: dto.email,
         password: hashedPassword,
-        foto: fotoPath,
+        photo: fotoPath,
         role_id: role.id,
         jabatan_id: dto.jabatan_id,
         komisi_id: dto.komisi_id,

@@ -88,8 +88,8 @@ export class AttendanceService {
       include: {
         agenda: {
           select: {
-            judul: true, // Should we rename agenda fields too? Not requested but wait... refactor.md doesn't mention renaming agenda fields.
-            tanggal: true,
+            title: true,
+            date: true,
           },
         },
       },

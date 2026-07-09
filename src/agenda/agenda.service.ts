@@ -29,13 +29,13 @@ export class AgendaService {
 
     const agenda = await this.prisma.agenda.create({
       data: {
-        judul: agendaData.judul,
-        deskripsi: agendaData.deskripsi,
-        lokasi: agendaData.lokasi,
-        tanggal: new Date(dto.tanggal),
-        waktu_mulai: waktu_mulai,
-        waktu_selesai: waktu_selesai,
-        tipe: agendaData.tipe,
+        title: agendaData.judul,
+        description: agendaData.deskripsi,
+        location: agendaData.lokasi,
+        date: new Date(dto.tanggal),
+        start_time: waktu_mulai,
+        end_time: waktu_selesai,
+        type: agendaData.tipe,
         targets: {
           create: targets?.map((t) => ({
             target_type: t.target_type,
@@ -53,22 +53,22 @@ export class AgendaService {
     const where: Prisma.AgendaWhereInput = {};
 
     if (filter.startDate && filter.endDate) {
-      where.tanggal = {
+      where.date = {
         gte: new Date(filter.startDate),
         lte: new Date(filter.endDate),
       };
     } else if (filter.startDate) {
-      where.tanggal = { gte: new Date(filter.startDate) };
+      where.date = { gte: new Date(filter.startDate) };
     } else if (filter.endDate) {
-      where.tanggal = { lte: new Date(filter.endDate) };
+      where.date = { lte: new Date(filter.endDate) };
     }
 
     if (filter.tipe) {
-      where.tipe = filter.tipe;
+      where.type = filter.tipe;
     }
 
     if (filter.search) {
-      where.judul = { contains: filter.search }; // case-insensitive defaults in Prisma vary by DB, but works fine for basic needs
+      where.title = { contains: filter.search }; // case-insensitive defaults in Prisma vary by DB, but works fine for basic needs
     }
 
     // Time filtering is a bit tricky with DB.Time in Prisma. We'll fetch and filter if necessary,
@@ -83,15 +83,15 @@ export class AgendaService {
     const agendas = await this.prisma.agenda.findMany({
       where,
       include: { targets: true },
-      orderBy: [{ tanggal: 'desc' }, { waktu_mulai: 'desc' }],
+      orderBy: [{ date: 'desc' }, { start_time: 'desc' }],
     });
 
     // Memory filter for strict time range since time-only comparison in some SQL DBs through Prisma DateTime mapping is tricky
     if (filter.startTime && filter.endTime) {
       return agendas.filter((a) => {
         // use UTC format to avoid timezone shift against saved UTC time
-        const itemStartTime = dayjs(a.waktu_mulai).utc().format('HH:mm');
-        const itemEndTime = dayjs(a.waktu_selesai).utc().format('HH:mm');
+        const itemStartTime = dayjs(a.start_time).utc().format('HH:mm');
+        const itemEndTime = dayjs(a.end_time).utc().format('HH:mm');
         return itemStartTime >= filter.startTime! && itemEndTime <= filter.endTime!;
       });
     }
@@ -149,26 +149,26 @@ export class AgendaService {
     return this.prisma.agenda.findMany({
       where: whereClause,
       include: { targets: true },
-      orderBy: [{ tanggal: 'desc' }, { waktu_mulai: 'desc' }],
+      orderBy: [{ date: 'desc' }, { start_time: 'desc' }],
     });
   }
 
   async getAgendaBersamaan(date: string) {
     // Cari semua agenda pada tanggal tertentu
     const agendas = await this.prisma.agenda.findMany({
-      where: { tanggal: new Date(date) },
+      where: { date: new Date(date) },
       include: { targets: true },
-      orderBy: { waktu_mulai: 'asc' },
+      orderBy: { start_time: 'asc' },
     });
 
     // Cari overlap
     const bersamaan: any[] = [];
     for (let i = 0; i < agendas.length; i++) {
       for (let j = i + 1; j < agendas.length; j++) {
-        const startA = agendas[i].waktu_mulai.getTime();
-        const endA = agendas[i].waktu_selesai.getTime();
-        const startB = agendas[j].waktu_mulai.getTime();
-        const endB = agendas[j].waktu_selesai.getTime();
+        const startA = agendas[i].start_time.getTime();
+        const endA = agendas[i].end_time.getTime();
+        const startB = agendas[j].start_time.getTime();
+        const endB = agendas[j].end_time.getTime();
 
         // Logic Overlap: Max(startA, startB) < Min(endA, endB)
         if (Math.max(startA, startB) < Math.min(endA, endB)) {
@@ -193,13 +193,13 @@ export class AgendaService {
     return this.prisma.agenda.update({
       where: { id },
       data: {
-        judul: agendaData.judul,
-        deskripsi: agendaData.deskripsi,
-        lokasi: agendaData.lokasi,
-        tanggal: new Date(dto.tanggal),
-        waktu_mulai,
-        waktu_selesai,
-        tipe: agendaData.tipe,
+        title: agendaData.judul,
+        description: agendaData.deskripsi,
+        location: agendaData.lokasi,
+        date: new Date(dto.tanggal),
+        start_time: waktu_mulai,
+        end_time: waktu_selesai,
+        type: agendaData.tipe,
         targets: {
           deleteMany: {}, // hapus target lama
           create: targets?.map((t) => ({
