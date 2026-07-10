@@ -73,7 +73,7 @@ export class AuthService {
     const payload = {
       email: user.email,
       sub: user.id,
-      role: user.role?.nama_role ?? user.role_id,
+      role: user.role?.role_name ?? user.role_id,
       device_id: loginDto.device_id ?? null,
       browser_agent: loginDto.browser_agent ?? null,
     };
@@ -83,18 +83,18 @@ export class AuthService {
       message: 'Login berhasil',
       data: {
         id: user.id,
-        nama: user.nama,
+        nama: user.name,
         email: user.email,
-        foto: user.foto,
-        role: user.role?.nama_role ?? '',
+        foto: user.photo,
+        role: user.role?.role_name ?? '',
         role_id: user.role_id,
-        jabatan: user.jabatan?.nama_jabatan ?? '',
+        jabatan: user.jabatan?.jabatan_name ?? '',
         jabatan_id: user.jabatan_id ?? 0,
-        fraksi: user.fraksi?.nama_fraksi ?? '',
+        fraksi: user.fraksi?.fraksi_name ?? '',
         fraksi_id: user.fraksi_id ?? 0,
-        komisi: user.komisi?.nama_komisi ?? '',
+        komisi: user.komisi?.komisi_name ?? '',
         komisi_id: user.komisi_id ?? 0,
-        akd: user.akds.map((ua: any) => ua.akd.nama_akd),
+        akd: user.akds.map((ua: any) => ua.akd.akd_name),
         access_token: this.jwtService.sign(payload),
       },
     };
@@ -138,18 +138,18 @@ export class AuthService {
 
     const userData = {
       id: user.id,
-      nama: user.nama,
+      nama: user.name,
       email: user.email,
-      foto: user.foto,
-      role: user.role?.nama_role ?? '',
+      foto: user.photo,
+      role: user.role?.role_name ?? '',
       role_id: user.role_id,
-      jabatan: user.jabatan?.nama_jabatan ?? '',
+      jabatan: user.jabatan?.jabatan_name ?? '',
       jabatan_id: user.jabatan_id ?? 0,
-      fraksi: user.fraksi?.nama_fraksi ?? '',
+      fraksi: user.fraksi?.fraksi_name ?? '',
       fraksi_id: user.fraksi_id ?? 0,
-      komisi: user.komisi?.nama_komisi ?? '',
+      komisi: user.komisi?.komisi_name ?? '',
       komisi_id: user.komisi_id ?? 0,
-      akd: user.akds.map((ua: any) => ua.akd.nama_akd),
+      akd: user.akds.map((ua: any) => ua.akd.akd_name),
     };
 
     const encryptedData = this.encryptData(userData);

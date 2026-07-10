@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class ClockinDto {
+export class AttendanceStatusDto {
   @IsNumber()
   @IsNotEmpty()
   agenda_id: number;
@@ -8,12 +8,4 @@ export class ClockinDto {
   @IsNumber()
   @IsNotEmpty()
   user_id: number;
-
-  @IsString()
-  @IsNotEmpty()
-  lokasi: string;
-
-  @IsString()
-  @IsNotEmpty()
-  foto: string; // Base64 encoded string
 }

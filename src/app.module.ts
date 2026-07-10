@@ -10,7 +10,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AgendaModule } from './agenda/agenda.module';
-import { KehadiranModule } from './kehadiran/kehadiran.module';
+import { AttendanceModule } from './attendance/attendance.module';
 import { BeritaModule } from './berita/berita.module';
 
 @Module({
@@ -39,7 +39,7 @@ import { BeritaModule } from './berita/berita.module';
     AuthModule,
     UsersModule,
     AgendaModule,
-    KehadiranModule,
+    AttendanceModule,
     BeritaModule,
   ],
   controllers: [AppController],
