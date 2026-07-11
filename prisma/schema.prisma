@@ -58,9 +58,9 @@ model Akd {
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   name          String
-  email         String          @unique
+  email         String       @unique
   password      String
   photo         String?
   role_id       String
@@ -69,16 +69,16 @@ model User {
   komisi_id     Int?
   device_id     String?
   browser_agent String?
-  role          Role            @relation(fields: [role_id], references: [id])
-  jabatan       Jabatan?        @relation(fields: [jabatan_id], references: [id])
-  fraksi        Fraksi?         @relation(fields: [fraksi_id], references: [id])
-  komisi        Komisi?         @relation(fields: [komisi_id], references: [id])
+  role          Role         @relation(fields: [role_id], references: [id])
+  jabatan       Jabatan?     @relation(fields: [jabatan_id], references: [id])
+  fraksi        Fraksi?      @relation(fields: [fraksi_id], references: [id])
+  komisi        Komisi?      @relation(fields: [komisi_id], references: [id])
   akds          UserAkd[]
   attendance    Attendance[]
   news          News[]
   messages      Message[]
   todos         TodoList[]
-  agendaCatatan AgendaCatatan[]
+  agendaNotes   AgendaNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -98,17 +98,17 @@ model UserAkd {
 }
 
 model Agenda {
-  id          Int             @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   title       String
-  description String?         @db.Text
+  description String?        @db.Text
   location    String?
-  date        DateTime        @db.Date
-  start_time  DateTime        @db.Time
-  end_time    DateTime        @db.Time
+  date        DateTime       @db.Date
+  start_time  DateTime       @db.Time
+  end_time    DateTime       @db.Time
   type        String? // e.g. Rapat Paripurna, dll
   targets     AgendaTarget[]
   attendance  Attendance[]
-  catatan     AgendaCatatan[]
+  notes       AgendaNote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -126,7 +126,7 @@ model AgendaTarget {
   @@map("agenda_target")
 }
 
-model AgendaCatatan {
+model AgendaNote {
   id        Int    @id @default(autoincrement())
   agenda_id Int
   user_id   Int
@@ -135,7 +135,7 @@ model AgendaCatatan {
   user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@unique([agenda_id, user_id])
-  @@map("agenda_catatan")
+  @@map("agenda_notes")
 }
 
 model Attendance {
