@@ -100,14 +100,18 @@ export class UsersController {
       storage: diskStorage({
         destination: './uploads/anggota', // Asumsi direktori ini akan dibuat atau ada konfigurasi khusus
         filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = extname(file.originalname);
           cb(null, `${uniqueSuffix}${ext}`);
         },
       }),
     }),
   )
-  async createAnggota(@Body() dto: CreateAnggotaDto, @UploadedFile() file: any) {
+  async createAnggota(
+    @Body() dto: CreateAnggotaDto,
+    @UploadedFile() file: any,
+  ) {
     const result = await this.usersService.createAnggota(dto, file);
     return { status: true, message: result.message };
   }

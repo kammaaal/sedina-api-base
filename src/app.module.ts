@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { AgendaModule } from './agenda/agenda.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { NewsModule } from './news/news.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { NewsModule } from './news/news.module';
     AgendaModule,
     AttendanceModule,
     NewsModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [
