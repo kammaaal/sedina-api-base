@@ -13,6 +13,7 @@ import { AgendaModule } from './agenda/agenda.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { NewsModule } from './news/news.module';
 import { MessagesModule } from './messages/messages.module';
+import { TodoModule } from './todo/todo.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { MessagesModule } from './messages/messages.module';
     AttendanceModule,
     NewsModule,
     MessagesModule,
+    TodoModule,
   ],
   controllers: [AppController],
   providers: [
