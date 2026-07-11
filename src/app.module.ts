@@ -14,6 +14,7 @@ import { AttendanceModule } from './attendance/attendance.module';
 import { NewsModule } from './news/news.module';
 import { MessagesModule } from './messages/messages.module';
 import { TodoModule } from './todo/todo.module';
+import { NotesModule } from './notes/notes.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { TodoModule } from './todo/todo.module';
     NewsModule,
     MessagesModule,
     TodoModule,
+    NotesModule,
   ],
   controllers: [AppController],
   providers: [

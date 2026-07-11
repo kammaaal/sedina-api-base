@@ -94,8 +94,8 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 - [x] **Controller:** `/todo`, `/todo/:id`, `/todo/:id/status`.
 - [x] **Service & Repository:** Complete CRUD for personal Todo list per user. Ensure filter by `userId` from JWT. Refactored Indonesian fields to English in Database Schema, DTOs, and API JSON Keys (`title`, `task_detail`, `note`, `date`, `time`, `location`, `priority`, `attachment`, `status`). Added Multer for file upload handling.
 
-### 8. Catatan (Notes)
+### 8. Notes
 *File Legacy: `get_catatan.php`, `save_catatan.php`*
-- [ ] **DTO:** `SaveCatatanDto`.
-- [ ] **Controller:** `/catatan`.
-- [ ] **Service & Repository:** Logic untuk upsert (update or insert) catatan pribadi berdasarkan user yang login.
+- [x] **DTO:** `SaveNoteDto`.
+- [x] **Controller:** `/notes/agenda/:agendaId` and `POST /notes`.
+- [x] **Service & Repository:** Logic to upsert (update or insert) a personal note based on the logged-in user and fetch the current note. Renamed model to `AgendaNote` and table to `agenda_notes` in Prisma Schema.
