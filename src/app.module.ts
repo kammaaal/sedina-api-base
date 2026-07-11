@@ -11,7 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AgendaModule } from './agenda/agenda.module';
 import { AttendanceModule } from './attendance/attendance.module';
-import { BeritaModule } from './berita/berita.module';
+import { NewsModule } from './news/news.module';
 
 @Module({
   imports: [
@@ -40,7 +40,7 @@ import { BeritaModule } from './berita/berita.module';
     UsersModule,
     AgendaModule,
     AttendanceModule,
-    BeritaModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [
