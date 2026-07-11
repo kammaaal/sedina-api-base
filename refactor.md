@@ -78,11 +78,15 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 - [x] **RBAC:** Only `superadmin` / `setwan` can access `POST /news`, `PATCH /news/:id`, `DELETE /news/:id`, and `GET /news/admin`. Normal users/members can only view published news via `GET /news`.
 - [x] **Cache (Redis):** Cache endpoint `/news` for public/members.
 
-### 6. Pesan
+### 6. Messages (Pesan)
 *File Legacy: `get_pesan (1).php`, `tambah_pesan.php`*
-- [ ] **DTO:** `CreatePesanDto`.
-- [ ] **Controller:** `/pesan`.
-- [ ] **Service & Repository:** Logic pengiriman pesan antar user/role. Validasi penerima pesan.
+- [x] **DTO:** `CreateMessageDto`.
+- [x] **Controller:** `/messages`.
+- [x] **Service & Repository:** Business logic implemented in `messages.service.ts` for sending and receiving messages.
+- [x] **Security & RBAC:** Role-based logic added:
+  - `Anggota Dewan (Anggota)` can only send 1-to-1 direct messages.
+  - `Sekretariat Dewan (Setwan)` and `superadmin` can send direct messages or broadcast to all (`all`), specific commissions (`komisi`), fractions (`fraksi`), etc.
+- [x] **Prisma Schema Update:** Refactored the old `Pesan` table to `Message` (mapped to `messages`) to support polymorphic targeting (`target_type`, `target_id`).
 
 ### 7. Todo (Tugas)
 *File Legacy: `get_todo.php`, `tambah_todo.php`, `update_todo.php`, `update_todo_status.php`, `hapus_todo.php`*

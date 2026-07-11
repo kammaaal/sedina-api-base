@@ -76,7 +76,7 @@ model User {
   akds          UserAkd[]
   attendance    Attendance[]
   news          News[]
-  pesan         Pesan[]
+  messages      Message[]
   todos         TodoList[]
   agendaCatatan AgendaCatatan[]
 
@@ -181,16 +181,17 @@ model NewsTag {
   @@map("news_tags")
 }
 
-model Pesan {
+model Message {
   id          Int      @id @default(autoincrement())
   sender_id   Int
-  receiver_id Int? // null jika broadcast/group message
+  target_type String // e.g., 'user', 'all', 'komisi', 'fraksi', 'akd', 'role'
+  target_id   String?
   content     String   @db.Text
   sender      User     @relation(fields: [sender_id], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@map("pesan")
+  @@map("messages")
 }
 
 model TodoList {

@@ -16,7 +16,12 @@ export class AgendaService {
   private parseTime(dateString: string, timeString: string): Date {
     const [hours, minutes, seconds] = timeString.split(':');
     const date = new Date(dateString);
-    date.setUTCHours(Number(hours) || 0, Number(minutes) || 0, Number(seconds) || 0, 0);
+    date.setUTCHours(
+      Number(hours) || 0,
+      Number(minutes) || 0,
+      Number(seconds) || 0,
+      0,
+    );
     return date;
   }
 
@@ -37,10 +42,11 @@ export class AgendaService {
         end_time: waktu_selesai,
         type: agendaData.tipe,
         targets: {
-          create: targets?.map((t) => ({
-            target_type: t.target_type,
-            target_id: t.target_id,
-          })) || [],
+          create:
+            targets?.map((t) => ({
+              target_type: t.target_type,
+              target_id: t.target_id,
+            })) || [],
         },
       },
       include: { targets: true },
@@ -74,10 +80,10 @@ export class AgendaService {
     // Time filtering is a bit tricky with DB.Time in Prisma. We'll fetch and filter if necessary,
     // or we can attempt to filter by extracting hours. For robust time filtering on DateTime DB types:
     if (filter.startTime && filter.endTime) {
-       // Since the DB field is DateTime (representing time), we can't easily do raw Prisma between on just time portion without raw queries.
-       // However, we can construct generic 1970-01-01 times for comparison if Prisma supports it,
-       // Or we can retrieve data and filter in memory if the dataset isn't huge.
-       // For this implementation, we will use Prisma raw or keep it simple. Let's do memory filter for the time if provided to ensure accuracy.
+      // Since the DB field is DateTime (representing time), we can't easily do raw Prisma between on just time portion without raw queries.
+      // However, we can construct generic 1970-01-01 times for comparison if Prisma supports it,
+      // Or we can retrieve data and filter in memory if the dataset isn't huge.
+      // For this implementation, we will use Prisma raw or keep it simple. Let's do memory filter for the time if provided to ensure accuracy.
     }
 
     const agendas = await this.prisma.agenda.findMany({
@@ -92,7 +98,9 @@ export class AgendaService {
         // use UTC format to avoid timezone shift against saved UTC time
         const itemStartTime = dayjs(a.start_time).utc().format('HH:mm');
         const itemEndTime = dayjs(a.end_time).utc().format('HH:mm');
-        return itemStartTime >= filter.startTime! && itemEndTime <= filter.endTime!;
+        return (
+          itemStartTime >= filter.startTime! && itemEndTime <= filter.endTime!
+        );
       });
     }
 
@@ -124,10 +132,16 @@ export class AgendaService {
     const targetConditions: any[] = [];
 
     if (user.fraksi_id) {
-      targetConditions.push({ target_type: 'fraksi', target_id: user.fraksi_id });
+      targetConditions.push({
+        target_type: 'fraksi',
+        target_id: user.fraksi_id,
+      });
     }
     if (user.komisi_id) {
-      targetConditions.push({ target_type: 'komisi', target_id: user.komisi_id });
+      targetConditions.push({
+        target_type: 'komisi',
+        target_id: user.komisi_id,
+      });
     }
     if (user.akds && user.akds.length > 0) {
       for (const ua of user.akds) {
@@ -144,7 +158,9 @@ export class AgendaService {
       return [];
     }
 
-    const whereClause: Prisma.AgendaWhereInput = { targets: { some: { OR: targetConditions } } };
+    const whereClause: Prisma.AgendaWhereInput = {
+      targets: { some: { OR: targetConditions } },
+    };
 
     return this.prisma.agenda.findMany({
       where: whereClause,
@@ -202,10 +218,11 @@ export class AgendaService {
         type: agendaData.tipe,
         targets: {
           deleteMany: {}, // hapus target lama
-          create: targets?.map((t) => ({
-            target_type: t.target_type,
-            target_id: t.target_id,
-          })) || [],
+          create:
+            targets?.map((t) => ({
+              target_type: t.target_type,
+              target_id: t.target_id,
+            })) || [],
         },
       },
       include: { targets: true },

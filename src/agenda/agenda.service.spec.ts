@@ -12,7 +12,13 @@ describe('AgendaService', () => {
         {
           provide: PrismaService,
           useValue: {
-            agenda: { create: jest.fn(), findMany: jest.fn(), findUnique: jest.fn(), update: jest.fn(), delete: jest.fn() },
+            agenda: {
+              create: jest.fn(),
+              findMany: jest.fn(),
+              findUnique: jest.fn(),
+              update: jest.fn(),
+              delete: jest.fn(),
+            },
             user: { findUnique: jest.fn() },
           },
         },

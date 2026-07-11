@@ -68,7 +68,10 @@ export class AgendaController {
   @Get('bersamaan')
   async getAgendaBersamaan(@Query('tanggal') tanggal: string) {
     if (!tanggal) {
-      return { status: false, message: 'Parameter tanggal diperlukan (YYYY-MM-DD)' };
+      return {
+        status: false,
+        message: 'Parameter tanggal diperlukan (YYYY-MM-DD)',
+      };
     }
     const data = await this.agendaService.getAgendaBersamaan(tanggal);
     return { status: true, data };
@@ -82,7 +85,10 @@ export class AgendaController {
 
   @Put(':id')
   @Roles('superadmin', 'setwan')
-  async update(@Param('id') id: string, @Body() updateAgendaDto: CreateAgendaDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateAgendaDto: CreateAgendaDto,
+  ) {
     const data = await this.agendaService.update(+id, updateAgendaDto);
     return { status: true, message: 'Agenda berhasil diubah', data };
   }
