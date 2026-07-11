@@ -90,9 +90,9 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 
 ### 7. Todo (Tugas)
 *File Legacy: `get_todo.php`, `tambah_todo.php`, `update_todo.php`, `update_todo_status.php`, `hapus_todo.php`*
-- [ ] **DTO:** `CreateTodoDto`, `UpdateTodoDto`, `UpdateTodoStatusDto`.
-- [ ] **Controller:** `/todo`, `/todo/:id`, `/todo/:id/status`.
-- [ ] **Service & Repository:** CRUD lengkap untuk Todo list pribadi per user. Pastikan filter berdasarkan `userId` dari JWT.
+- [x] **DTO:** `CreateTodoDto`, `UpdateTodoDto`, `UpdateTodoStatusDto`.
+- [x] **Controller:** `/todo`, `/todo/:id`, `/todo/:id/status`.
+- [x] **Service & Repository:** Complete CRUD for personal Todo list per user. Ensure filter by `userId` from JWT. Refactored Indonesian fields to English in Database Schema, DTOs, and API JSON Keys (`title`, `task_detail`, `note`, `date`, `time`, `location`, `priority`, `attachment`, `status`). Added Multer for file upload handling.
 
 ### 8. Catatan (Notes)
 *File Legacy: `get_catatan.php`, `save_catatan.php`*
