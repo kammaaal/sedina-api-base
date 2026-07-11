@@ -70,13 +70,13 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 - [x] **Controller:** `/attendance/clockin`, `/attendance/status`, `/attendance/history`.
 - [x] **Service & Repository:** Pencatatan lokasi (lat/long) dan validasi waktu clock-in, memastikan user belum clock-in di hari/sesi yang sama.
 
-### 5. Berita
+### 5. News
 *File Legacy: `get_berita.php`, `get_berita_admin.php`, `tambah_berita.php`, `update_dilihat.php`*
-- [ ] **DTO:** `CreateBeritaDto`, `UpdateDilihatDto`.
-- [ ] **Controller:** `/berita`, `/berita/admin`, `/berita/:id/view`.
-- [ ] **Service & Repository:** Logic manajemen berita dan pencatatan view count.
-- [ ] **RBAC:** Hanya admin/setwan yang bisa `tambah_berita`.
-- [ ] **Cache (Redis):** Cache endpoint `/berita` untuk public/anggota.
+- [x] **DTO:** `CreateNewsDto`, `UpdateNewsDto`.
+- [x] **Controller:** `/news`, `/news/admin`, `/news`, `/news/:id`, `/news/:id/view`.
+- [x] **Service & Repository:** News management logic including tags (many-to-many) and view count increment.
+- [x] **RBAC:** Only `superadmin` / `setwan` can access `POST /news`, `PATCH /news/:id`, `DELETE /news/:id`, and `GET /news/admin`. Normal users/members can only view published news via `GET /news`.
+- [x] **Cache (Redis):** Cache endpoint `/news` for public/members.
 
 ### 6. Pesan
 *File Legacy: `get_pesan (1).php`, `tambah_pesan.php`*
