@@ -99,3 +99,43 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 - [x] **DTO:** `SaveNoteDto`.
 - [x] **Controller:** `/notes/agenda/:agendaId` and `POST /notes`.
 - [x] **Service & Repository:** Logic to upsert (update or insert) a personal note based on the logged-in user and fetch the current note. Renamed model to `AgendaNote` and table to `agenda_notes` in Prisma Schema.
+
+## Fase 2: Pengembangan & Enhancement Lanjutan
+
+Berdasarkan kebutuhan sistem yang berkembang, berikut adalah rencana implementasi fitur-fitur baru dan peningkatan keamanan.
+
+### 1. Peningkatan Keamanan: Migrasi Hashing Password ke Argon2
+- **Tujuan:** Beralih dari `bcrypt` ke algoritma `Argon2` yang lebih tahan terhadap serangan *brute-force* dan *GPU cracking*.
+- **Mekanisme Migrasi (*Upgrade-on-Login*):**
+  - Saat user login, sistem akan mengecek jenis hash yang tersimpan di database.
+  - Jika format hash adalah Bcrypt (dimulai dengan `$2a$`, `$2b$`, atau `$2y$`), sistem akan memverifikasi password menggunakan `bcrypt.compare`.
+  - Jika cocok, sistem secara transparan (tanpa disadari user) akan melakukan hash ulang (re-hash) password *plain-text* tersebut menggunakan Argon2 dan menyimpannya (update) kembali ke database.
+  - Jika format hash sudah Argon2 (dimulai dengan `$argon2...`), sistem akan langsung memverifikasi menggunakan Argon2.
+- **Implementasi Lainnya:**
+  - Pastikan semua alur pembuatan password baru (Registrasi, `tambah_anggota`, Ganti Password, Reset Password) langsung menggunakan `Argon2`.
+  - Instal dependensi: `npm install argon2`.
+  - Modifikasi `auth.service.ts` dan service terkait lainnya.
+
+### 2. Manajemen Sesi Pengguna (Riwayat Login & Linked Devices)
+- **Tujuan:** Memberikan transparansi dan kontrol kepada user atas aktivitas login dan perangkat yang terhubung ke akun mereka.
+- **Prisma Schema Update:**
+  - Buat tabel baru (misal: `LoginHistory` / `UserSession`) yang menyimpan: `id`, `userId`, `ipAddress`, `userAgent` (browser/device), `loginTime`, `location` (opsional, dari IP), `status` (SUKSES/GAGAL), `isRevoked` (boolean), dan `sessionId` (unik).
+- **Endpoint Baru:**
+  - `GET /users/me/login-history`: Menampilkan riwayat login (Success/Failed) beserta detail IP, waktu, lokasi, dan browser/device.
+  - `GET /users/me/devices`: Menampilkan daftar sesi/perangkat yang saat ini aktif (Linked Devices).
+  - `DELETE /users/me/devices/:sessionId`: Memungkinkan user untuk mencabut akses (revoke) atau melakukan *force logout* pada perangkat tertentu dari jarak jauh.
+- **Keamanan Sesi:**
+  - Modifikasi *JWT strategy* atau `JwtAuthGuard` untuk memvalidasi apakah `sessionId` yang ada di dalam token (JWT payload) belum di-revoke di database atau Redis. Jika sudah di-revoke, tolak akses (401 Unauthorized).
+
+### 3. Audit Trail (Sistem Log Aktivitas Mutasi Data)
+- **Tujuan:** Mencatat setiap aktivitas krusial untuk kebutuhan audit, *tracking* perubahan, dan akuntabilitas.
+- **Cakupan:**
+  - Mencatat *semua* mutasi data (CREATE, UPDATE, DELETE) di seluruh sistem.
+  - Difokuskan secara khusus dan mendalam pada modul sensitif: Auth, User Management, dan Role/Permission.
+- **Prisma Schema Update:**
+  - Buat tabel `AuditTrail` dengan field: `id`, `userId` (pelaku), `action` (CREATE, UPDATE, DELETE), `entity` / `tableName`, `entityId`, `oldValues` (JSON), `newValues` (JSON), `ipAddress`, `userAgent`, dan `createdAt`.
+- **Mekanisme Implementasi:**
+  - Gunakan **Prisma Middleware** atau **Prisma Extensions** untuk secara otomatis meng-intercept (*hook*) setiap eksekusi *query* mutasi data, membandingkan data sebelum (oldValues) dan sesudah (newValues), lalu mencatatnya ke tabel `AuditTrail`.
+- **Akses & RBAC:**
+  - Endpoint `GET /audit-logs`: Untuk melihat log audit secara keseluruhan.
+  - **Dibatasi secara ketat:** Endpoint ini hanya boleh diakses oleh user dengan role `superadmin` dan `Sekretariat Dewan (Setwan)`. Anggota biasa tidak memiliki akses.
