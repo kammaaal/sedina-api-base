@@ -35,6 +35,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // Include payload device_id and browser_agent so getSession can verify them
       device_id_from_payload: payload.device_id,
       browser_agent_from_payload: payload.browser_agent,
+      sessionId: payload.sessionId,
     };
   }
 }

@@ -4,7 +4,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import * as crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { LoginDto } from './dto/login.dto';
+import { LoginHistoryService } from '../login-history/login-history.service';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +14,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private loginHistoryService: LoginHistoryService,
   ) {}
 
   private encryptData(data: any): string {
@@ -53,14 +56,29 @@ export class AuthService {
     });
 
     if (user && (await argon2.verify(user.password, loginDto.password))) {
-      const { password, ...result } = user;
-      return result;
+      return user;
     }
 
     throw new UnauthorizedException('Email atau password salah');
   }
 
-  async login(user: any, loginDto: LoginDto) {
+  async recordFailedLogin(email: string, ipAddress: string, userAgent: string) {
+    await this.loginHistoryService.createHistory({
+      email,
+      ipAddress,
+      userAgent,
+      status: 'FAILED',
+    });
+  }
+
+  async login(
+    user: any,
+    loginDto: LoginDto,
+    ipAddress: string,
+    userAgent: string,
+  ) {
+    const sessionId = uuidv4();
+
     // Update user device_id and browser_agent
     await this.prisma.user.update({
       where: { id: user.id },
@@ -70,12 +88,22 @@ export class AuthService {
       },
     });
 
+    await this.loginHistoryService.createHistory({
+      userId: user.id,
+      email: user.email,
+      ipAddress,
+      userAgent,
+      status: 'SUCCESS',
+      sessionId,
+    });
+
     const payload = {
       email: user.email,
       sub: user.id,
       role: user.role?.role_name ?? user.role_id,
       device_id: loginDto.device_id ?? null,
       browser_agent: loginDto.browser_agent ?? null,
+      sessionId,
     };
 
     return {
