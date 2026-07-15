@@ -115,14 +115,14 @@ Berdasarkan kebutuhan sistem yang berkembang, berikut adalah rencana implementas
   - Modifikasi `auth.service.ts` dan service terkait lainnya.
 
 ### 2. Manajemen Sesi Pengguna (Riwayat Login & Linked Devices)
-- **Tujuan:** Memberikan transparansi dan kontrol kepada user atas aktivitas login dan perangkat yang terhubung ke akun mereka.
-- **Prisma Schema Update:**
+- [x] **Tujuan:** Memberikan transparansi dan kontrol kepada user atas aktivitas login dan perangkat yang terhubung ke akun mereka.
+- [x] **Prisma Schema Update:**
   - Buat tabel baru (misal: `LoginHistory` / `UserSession`) yang menyimpan: `id`, `userId`, `ipAddress`, `userAgent` (browser/device), `loginTime`, `location` (opsional, dari IP), `status` (SUKSES/GAGAL), `isRevoked` (boolean), dan `sessionId` (unik).
-- **Endpoint Baru:**
+- [x] **Endpoint Baru:**
   - `GET /users/me/login-history`: Menampilkan riwayat login (Success/Failed) beserta detail IP, waktu, lokasi, dan browser/device.
   - `GET /users/me/devices`: Menampilkan daftar sesi/perangkat yang saat ini aktif (Linked Devices).
   - `DELETE /users/me/devices/:sessionId`: Memungkinkan user untuk mencabut akses (revoke) atau melakukan *force logout* pada perangkat tertentu dari jarak jauh.
-- **Keamanan Sesi:**
+- [x] **Keamanan Sesi:**
   - Modifikasi *JWT strategy* atau `JwtAuthGuard` untuk memvalidasi apakah `sessionId` yang ada di dalam token (JWT payload) belum di-revoke di database atau Redis. Jika sudah di-revoke, tolak akses (401 Unauthorized).
 
 ### 3. Audit Trail (Sistem Log Aktivitas Mutasi Data)

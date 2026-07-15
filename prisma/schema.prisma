@@ -58,32 +58,50 @@ model Akd {
 }
 
 model User {
-  id            Int          @id @default(autoincrement())
-  name          String
-  email         String       @unique
-  password      String
-  photo         String?
-  role_id       String
-  jabatan_id    Int?
-  fraksi_id     Int?
-  komisi_id     Int?
-  device_id     String?
-  browser_agent String?
-  role          Role         @relation(fields: [role_id], references: [id])
-  jabatan       Jabatan?     @relation(fields: [jabatan_id], references: [id])
-  fraksi        Fraksi?      @relation(fields: [fraksi_id], references: [id])
-  komisi        Komisi?      @relation(fields: [komisi_id], references: [id])
-  akds          UserAkd[]
-  attendance    Attendance[]
-  news          News[]
-  messages      Message[]
-  todos         TodoList[]
-  agendaNotes   AgendaNote[]
+  id             Int            @id @default(autoincrement())
+  name           String
+  email          String         @unique
+  password       String
+  photo          String?
+  role_id        String
+  jabatan_id     Int?
+  fraksi_id      Int?
+  komisi_id      Int?
+  device_id      String?
+  browser_agent  String?
+  role           Role           @relation(fields: [role_id], references: [id])
+  jabatan        Jabatan?       @relation(fields: [jabatan_id], references: [id])
+  fraksi         Fraksi?        @relation(fields: [fraksi_id], references: [id])
+  komisi         Komisi?        @relation(fields: [komisi_id], references: [id])
+  akds           UserAkd[]
+  attendance     Attendance[]
+  news           News[]
+  messages       Message[]
+  todos          TodoList[]
+  agendaNotes    AgendaNote[]
+  loginHistories LoginHistory[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
+}
+
+model LoginHistory {
+  id        String   @id @default(uuid())
+  userId    Int?
+  email     String
+  ipAddress String
+  userAgent String
+  loginTime DateTime @default(now())
+  location  String?
+  status    String // 'SUCCESS' or 'FAILED'
+  isRevoked Boolean  @default(false)
+  sessionId String   @unique @default(uuid())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("login_history")
 }
 
 model UserAkd {
