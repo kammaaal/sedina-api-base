@@ -100,7 +100,7 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 - [x] **Controller:** `/notes/agenda/:agendaId` and `POST /notes`.
 - [x] **Service & Repository:** Logic to upsert (update or insert) a personal note based on the logged-in user and fetch the current note. Renamed model to `AgendaNote` and table to `agenda_notes` in Prisma Schema.
 
-## Fase 2: Pengembangan & Enhancement Lanjutan
+## Fase 2: Pengembangan & Enhancement Lanjutan (Session Management & Audit Trail)
 
 Berdasarkan kebutuhan sistem yang berkembang, berikut adalah rencana implementasi fitur-fitur baru dan peningkatan keamanan.
 
@@ -114,26 +114,71 @@ Berdasarkan kebutuhan sistem yang berkembang, berikut adalah rencana implementas
   - Menginstal dependensi `argon2` dan menghapus `bcrypt`.
   - Modifikasi `auth.service.ts` dan service terkait lainnya.
 
-### 2. Manajemen Sesi Pengguna (Riwayat Login & Linked Devices)
-- [x] **Tujuan:** Memberikan transparansi dan kontrol kepada user atas aktivitas login dan perangkat yang terhubung ke akun mereka.
-- [x] **Prisma Schema Update:**
-  - Buat tabel baru (misal: `LoginHistory` / `UserSession`) yang menyimpan: `id`, `userId`, `ipAddress`, `userAgent` (browser/device), `loginTime`, `location` (opsional, dari IP), `status` (SUKSES/GAGAL), `isRevoked` (boolean), dan `sessionId` (unik).
-- [x] **Endpoint Baru:**
-  - `GET /users/me/login-history`: Menampilkan riwayat login (Success/Failed) beserta detail IP, waktu, lokasi, dan browser/device.
-  - `GET /users/me/devices`: Menampilkan daftar sesi/perangkat yang saat ini aktif (Linked Devices).
-  - `DELETE /users/me/devices/:sessionId`: Memungkinkan user untuk mencabut akses (revoke) atau melakukan *force logout* pada perangkat tertentu dari jarak jauh.
-- [x] **Keamanan Sesi:**
-  - Modifikasi *JWT strategy* atau `JwtAuthGuard` untuk memvalidasi apakah `sessionId` yang ada di dalam token (JWT payload) belum di-revoke di database atau Redis. Jika sudah di-revoke, tolak akses (401 Unauthorized).
+### MANDATORY ARCHITECTURE STANDARDS
+Sebelum menulis kode untuk fitur di bawah ini, wajib mematuhi standar berikut agar konsisten dengan modul lainnya:
 
-### 3. Audit Trail (Sistem Log Aktivitas Mutasi Data)
-- **Tujuan:** Mencatat setiap aktivitas krusial untuk kebutuhan audit, *tracking* perubahan, dan akuntabilitas.
-- **Cakupan:**
-  - Mencatat *semua* mutasi data (CREATE, UPDATE, DELETE) di seluruh sistem.
-  - Difokuskan secara khusus dan mendalam pada modul sensitif: Auth, User Management, dan Role/Permission.
-- **Prisma Schema Update:**
-  - Buat tabel `AuditTrail` dengan field: `id`, `userId` (pelaku), `action` (CREATE, UPDATE, DELETE), `entity` / `tableName`, `entityId`, `oldValues` (JSON), `newValues` (JSON), `ipAddress`, `userAgent`, dan `createdAt`.
-- **Mekanisme Implementasi:**
-  - Gunakan **Prisma Middleware** atau **Prisma Extensions** untuk secara otomatis meng-intercept (*hook*) setiap eksekusi *query* mutasi data, membandingkan data sebelum (oldValues) dan sesudah (newValues), lalu mencatatnya ke tabel `AuditTrail`.
-- **Akses & RBAC:**
-  - Endpoint `GET /audit-logs`: Untuk melihat log audit secara keseluruhan.
-  - **Dibatasi secara ketat:** Endpoint ini hanya boleh diakses oleh user dengan role `superadmin` dan `Sekretariat Dewan (Setwan)`. Anggota biasa tidak memiliki akses.
+1. **Folder structure per feature (Vertical Slice)**:
+   ```
+   src/<feature>/
+     ├── <feature>.module.ts
+     ├── <feature>.controller.ts
+     ├── <feature>.service.ts
+     ├── <feature>.repository.ts
+     ├── dto/
+     └── entities/ (or types/)
+   ```
+2. **Validation**: `class-validator` + `class-transformer` on every DTO. Follow the existing global `ValidationPipe` (`whitelist: true`, `forbidNonWhitelisted: true`).
+3. **Error handling**: use NestJS's built-in HTTP Exceptions. Ensure error responses remain uniform.
+4. **Security & RBAC**:
+   - All new endpoints **must** be protected by `JwtAuthGuard` by default.
+   - Use the existing `RolesGuard` + `@Roles()` decorator — applicable roles: `superadmin`, `Sekretariat Dewan (Setwan)`, `Anggota Dewan (Anggota)`.
+5. **Caching**: use Redis only where relevant — for session management, Redis is used for *session revocation checks*.
+6. **Field/API language**: normalize fields to English (Prisma schema fields, DTOs, JSON responses).
+7. Add Swagger documentation if used in other modules.
+8. Add unit tests (service) and basic e2e tests (controller) following existing patterns.
+
+---
+
+### 2. Manajemen Sesi Pengguna (User Session Management)
+**Goal:** Give users transparency and control over their login history and connected devices, including the ability to remotely force-logout a device.
+
+- [ ] **Prisma Schema (`UserSession`):**
+  - Create model `UserSession` (combines login history + linked devices). Fields: `id`, `userId`, `sessionId` (unique), `ipAddress`, `userAgent`, `deviceName`, `location`, `status` (`SUCCESS`/`FAILED`), `isRevoked`, `loginAt`, `revokedAt`, `expiresAt`.
+- [ ] **Auth Flow Modifications:**
+  - On successful login (`auth.service.ts`): Generate unique `sessionId`, embed in JWT payload, save `UserSession` (`SUCCESS`), and store revocation status in Redis (`session:{sessionId}` -> revoked flag).
+  - On failed login: Record attempt with `status: FAILED`.
+- [ ] **New Endpoints:**
+  - `GET /users/me/login-history`: Login history (success/failed) with pagination & filters.
+  - `GET /users/me/devices`: List of active sessions.
+  - `DELETE /users/me/devices/:sessionId`: Revoke specific session (force logout).
+- [ ] **`JwtAuthGuard` Modifications:**
+  - After JWT validation, extract `sessionId`, check Redis (`session:{sessionId}` revoked?). Fall back to DB query if not in Redis. Throw `UnauthorizedException` (401) if revoked or expired.
+
+---
+
+### 3. Audit Trail (Data Mutation Activity Log System)
+**Goal:** Record all data mutations (CREATE/UPDATE/DELETE) across the system for audit and accountability.
+
+- [ ] **Prisma Schema (`AuditTrail`):**
+  - Create model `AuditTrail`. Fields: `id`, `userId`, `action` (`CREATE`/`UPDATE`/`DELETE`), `entity`, `entityId`, `oldValues` (JSON), `newValues` (JSON), `ipAddress`, `userAgent`, `createdAt`.
+- [ ] **Implementation Mechanism:**
+  - Use **Prisma Client Extension** (`$extends`) to intercept `create`, `update`, `delete` queries.
+  - Flow: Fetch old data -> Execute query -> Capture new values -> Write to `AuditTrail` (asynchronously/non-blocking).
+  - **Mandatory sanitization**: Remove/mask sensitive fields (e.g., `password`, `token`).
+  - Use `AsyncLocalStorage` to access request context (`userId`, `ipAddress`, `userAgent`) inside the Prisma extension.
+- [ ] **Scope:**
+  - Apply globally, but focus heavily on `Auth`, `Users`, and Role/Permission modules.
+- [ ] **New Endpoint:**
+  - `GET /audit-logs`: List audit logs with filters (`entity`, `userId`, `action`, date range) + pagination. Strict RBAC: **Only** `superadmin` and `Sekretariat Dewan (Setwan)`.
+
+---
+
+### DELIVERABLES — CHECKLIST BEFORE CONSIDERING THIS DONE
+- [ ] Prisma schema for `UserSession` and `AuditTrail` added + migration generated (`prisma migrate dev`).
+- [ ] `sessions` module (or added to `users` module) with the 3 endpoints above, DTOs, guards, and RBAC.
+- [ ] `JwtAuthGuard`/strategy validates `sessionId` against Redis and DB.
+- [ ] `audit-trail` module with Prisma Client Extension hooking all mutations, sanitizing data, and `GET /audit-logs` endpoint with strict RBAC.
+- [ ] All new API fields are in English.
+- [ ] Swagger docs for all new endpoints (if applicable).
+- [ ] Unit tests (service) + basic e2e tests for both features.
+- [ ] Document assumptions made (e.g., session duration, audit log retention).
