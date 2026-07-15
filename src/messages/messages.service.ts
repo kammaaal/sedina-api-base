@@ -98,7 +98,10 @@ export class MessagesService {
 
     // Broadcasts to this user's role
     if (user.role_id) {
-      conditions.push({ target_type: 'role', target_id: user.role_id.toString() });
+      conditions.push({
+        target_type: 'role',
+        target_id: user.role_id.toString(),
+      });
     }
 
     const messages = await this.prisma.message.findMany({

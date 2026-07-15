@@ -6,7 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAnggotaDto } from './dto/create-anggota.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import * as bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class UsersService {
@@ -55,12 +55,12 @@ export class UsersService {
       throw new NotFoundException('User tidak ditemukan');
     }
 
-    const isMatch = await bcrypt.compare(dto.old_password, user.password);
+    const isMatch = await argon2.verify(user.password, dto.old_password);
     if (!isMatch) {
       throw new BadRequestException('Password lama salah');
     }
 
-    const hashedPassword = await bcrypt.hash(dto.new_password, 10);
+    const hashedPassword = await argon2.hash(dto.new_password);
     await this.prisma.user.update({
       where: { id: userId },
       data: { password: hashedPassword },
@@ -102,7 +102,7 @@ export class UsersService {
       throw new BadRequestException('Role Anggota tidak ditemukan di database');
     }
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const hashedPassword = await argon2.hash(dto.password);
     const fotoPath = file ? file.filename : null; // Asumsi menggunakan disk storage atau cloud storage
 
     const newUser = await this.prisma.user.create({

@@ -60,7 +60,11 @@ export class TodoController {
     @Body() updateTodoStatusDto: UpdateTodoStatusDto,
   ) {
     const userId = req.user.id;
-    return this.todoService.updateTodoStatus(+id, userId, updateTodoStatusDto.status);
+    return this.todoService.updateTodoStatus(
+      +id,
+      userId,
+      updateTodoStatusDto.status,
+    );
   }
 
   @Delete(':id')

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { TodoRepository } from './todo.repository';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
@@ -13,7 +17,7 @@ export class TodoService {
     const todos = await this.todoRepository.findAllByUserId(userId);
     return {
       status: true,
-      data: todos.map(todo => ({
+      data: todos.map((todo) => ({
         ...todo,
         attachment: todo.attachment
           ? `${process.env.APP_URL || 'http://localhost:3000'}/uploads/todo/${todo.attachment}`
@@ -22,7 +26,11 @@ export class TodoService {
     };
   }
 
-  async createTodo(userId: number, createTodoDto: CreateTodoDto, file?: Express.Multer.File) {
+  async createTodo(
+    userId: number,
+    createTodoDto: CreateTodoDto,
+    file?: Express.Multer.File,
+  ) {
     const dateStr = createTodoDto.date.split('T')[0];
     const timeParts = createTodoDto.time.split(':');
     const hours = timeParts[0] || '00';
@@ -51,13 +59,20 @@ export class TodoService {
     };
   }
 
-  async updateTodo(id: number, userId: number, updateTodoDto: UpdateTodoDto, file?: Express.Multer.File) {
+  async updateTodo(
+    id: number,
+    userId: number,
+    updateTodoDto: UpdateTodoDto,
+    file?: Express.Multer.File,
+  ) {
     const todo = await this.todoRepository.findById(id);
     if (!todo) {
       throw new NotFoundException('Todo not found');
     }
     if (todo.user_id !== userId) {
-      throw new UnauthorizedException('You do not have permission to update this todo');
+      throw new UnauthorizedException(
+        'You do not have permission to update this todo',
+      );
     }
 
     const data: any = {};
@@ -67,7 +82,9 @@ export class TodoService {
     if (updateTodoDto.date) data.date = new Date(updateTodoDto.date);
 
     if (updateTodoDto.time) {
-      const dateStr = updateTodoDto.date ? updateTodoDto.date.split('T')[0] : todo.date.toISOString().split('T')[0];
+      const dateStr = updateTodoDto.date
+        ? updateTodoDto.date.split('T')[0]
+        : todo.date.toISOString().split('T')[0];
       const timeParts = updateTodoDto.time.split(':');
       const hours = timeParts[0] || '00';
       const minutes = timeParts[1] || '00';
@@ -100,7 +117,9 @@ export class TodoService {
       throw new NotFoundException('Todo not found');
     }
     if (todo.user_id !== userId) {
-      throw new UnauthorizedException('You do not have permission to update this todo');
+      throw new UnauthorizedException(
+        'You do not have permission to update this todo',
+      );
     }
 
     await this.todoRepository.updateStatus(id, status);
@@ -117,7 +136,9 @@ export class TodoService {
       throw new NotFoundException('Todo not found');
     }
     if (todo.user_id !== userId) {
-      throw new UnauthorizedException('You do not have permission to delete this todo');
+      throw new UnauthorizedException(
+        'You do not have permission to delete this todo',
+      );
     }
 
     if (todo.attachment) {
@@ -134,7 +155,14 @@ export class TodoService {
 
   private deleteFile(filename: string) {
     try {
-      const filePath = path.join(__dirname, '..', '..', 'uploads', 'todo', filename);
+      const filePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'uploads',
+        'todo',
+        filename,
+      );
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }

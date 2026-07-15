@@ -105,15 +105,13 @@ Setiap fitur (Vertical Slice) harus mengadopsi standar berikut:
 Berdasarkan kebutuhan sistem yang berkembang, berikut adalah rencana implementasi fitur-fitur baru dan peningkatan keamanan.
 
 ### 1. Peningkatan Keamanan: Migrasi Hashing Password ke Argon2
-- **Tujuan:** Beralih dari `bcrypt` ke algoritma `Argon2` yang lebih tahan terhadap serangan *brute-force* dan *GPU cracking*.
-- **Mekanisme Migrasi (*Upgrade-on-Login*):**
-  - Saat user login, sistem akan mengecek jenis hash yang tersimpan di database.
-  - Jika format hash adalah Bcrypt (dimulai dengan `$2a$`, `$2b$`, atau `$2y$`), sistem akan memverifikasi password menggunakan `bcrypt.compare`.
-  - Jika cocok, sistem secara transparan (tanpa disadari user) akan melakukan hash ulang (re-hash) password *plain-text* tersebut menggunakan Argon2 dan menyimpannya (update) kembali ke database.
-  - Jika format hash sudah Argon2 (dimulai dengan `$argon2...`), sistem akan langsung memverifikasi menggunakan Argon2.
-- **Implementasi Lainnya:**
-  - Pastikan semua alur pembuatan password baru (Registrasi, `tambah_anggota`, Ganti Password, Reset Password) langsung menggunakan `Argon2`.
-  - Instal dependensi: `npm install argon2`.
+- [x] **Tujuan:** Beralih dari `bcrypt` ke algoritma `Argon2` yang lebih tahan terhadap serangan *brute-force* dan *GPU cracking*.
+- [x] **Mekanisme Migrasi (*Hard Reset*):**
+  - Karena instruksi *user*, sistem kini sepenuhnya mengadopsi `Argon2` dan seluruh ketergantungan pada `bcrypt` telah dihapus.
+  - Pengguna dengan password lama yang di-hash dengan `bcrypt` perlu di-reset secara manual.
+- [x] **Implementasi Lainnya:**
+  - Semua alur pembuatan password baru (Registrasi, `tambah_anggota`, Ganti Password, Reset Password) langsung menggunakan `Argon2`.
+  - Menginstal dependensi `argon2` dan menghapus `bcrypt`.
   - Modifikasi `auth.service.ts` dan service terkait lainnya.
 
 ### 2. Manajemen Sesi Pengguna (Riwayat Login & Linked Devices)
