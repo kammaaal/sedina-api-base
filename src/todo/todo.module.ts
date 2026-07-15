@@ -12,7 +12,8 @@ import { TodoRepository } from './todo.repository';
       storage: diskStorage({
         destination: './uploads/todo',
         filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '_' + Math.round(Math.random() * 1e9);
+          const uniqueSuffix =
+            Date.now() + '_' + Math.round(Math.random() * 1e9);
           cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
         },
       }),

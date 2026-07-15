@@ -15,10 +15,7 @@ export class TodoRepository {
   async findAllByUserId(userId: number) {
     return this.prisma.todoList.findMany({
       where: { user_id: userId },
-      orderBy: [
-        { date: 'asc' },
-        { time: 'asc' },
-      ],
+      orderBy: [{ date: 'asc' }, { time: 'asc' }],
     });
   }
 

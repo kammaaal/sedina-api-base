@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 import * as crypto from 'crypto';
 import { LoginDto } from './dto/login.dto';
 
@@ -52,7 +52,7 @@ export class AuthService {
       },
     });
 
-    if (user && (await bcrypt.compare(loginDto.password, user.password))) {
+    if (user && (await argon2.verify(user.password, loginDto.password))) {
       const { password, ...result } = user;
       return result;
     }
