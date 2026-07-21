@@ -7,33 +7,41 @@ import {
   Req,
   NotFoundException,
 } from '@nestjs/common';
-import { LoginHistoryService } from './login-history.service';
+import { SessionsService } from './sessions.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('users/me')
 @UseGuards(JwtAuthGuard)
-export class LoginHistoryController {
-  constructor(private readonly loginHistoryService: LoginHistoryService) {}
+export class SessionsController {
+  constructor(private readonly sessionsService: SessionsService) {}
 
   @Get('login-history')
-  async getLoginHistory(@Req() req: { user?: { id: number } }) {
+  async getSessions(@Req() req: { user?: { id: number } }) {
     const userId = Number(req.user?.id);
-    const histories = await this.loginHistoryService.getHistories(userId);
+    const histories = await this.sessionsService.getHistories(userId);
+    const formattedHistories = histories.map((h) => ({
+      ...h,
+      location: h.location ? JSON.parse(h.location) : null,
+    }));
     return {
       status: true,
       message: 'Berhasil mengambil riwayat login',
-      data: histories,
+      data: formattedHistories,
     };
   }
 
   @Get('devices')
   async getActiveDevices(@Req() req: { user?: { id: number } }) {
     const userId = Number(req.user?.id);
-    const devices = await this.loginHistoryService.getActiveDevices(userId);
+    const devices = await this.sessionsService.getActiveDevices(userId);
+    const formattedDevices = devices.map((d) => ({
+      ...d,
+      location: d.location ? JSON.parse(d.location) : null,
+    }));
     return {
       status: true,
       message: 'Berhasil mengambil daftar perangkat aktif',
-      data: devices,
+      data: formattedDevices,
     };
   }
 
@@ -43,10 +51,7 @@ export class LoginHistoryController {
     @Param('sessionId') sessionId: string,
   ) {
     const userId = Number(req.user?.id);
-    const result = await this.loginHistoryService.revokeDevice(
-      userId,
-      sessionId,
-    );
+    const result = await this.sessionsService.revokeDevice(userId, sessionId);
 
     if (!result) {
       throw new NotFoundException('Sesi tidak ditemukan atau bukan milik Anda');

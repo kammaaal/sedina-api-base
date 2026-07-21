@@ -23,4 +23,12 @@ export class LoginDto {
   @IsOptional()
   @IsString()
   browser_agent?: string;
+
+  @IsOptional()
+  @IsString()
+  deviceId?: string;
+
+  @IsOptional()
+  @IsString()
+  deviceName?: string;
 }

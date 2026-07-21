@@ -23,6 +23,11 @@ export class AuthController {
   async login(@Body() loginDto: LoginDto, @Request() req: any) {
     const ip = String(req.ip || req.connection?.remoteAddress || '');
     const userAgent = String(req.headers?.['user-agent'] || '');
+    // Prioritize custom header for device_id, fallback to body
+    const deviceIdHeader = req.headers?.['x-device-id'] as string;
+    if (deviceIdHeader) {
+      loginDto.deviceId = deviceIdHeader;
+    }
 
     try {
       const user = await this.authService.validateUser(loginDto);
