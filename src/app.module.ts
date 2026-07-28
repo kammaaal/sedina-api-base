@@ -15,7 +15,7 @@ import { NewsModule } from './news/news.module';
 import { MessagesModule } from './messages/messages.module';
 import { TodoModule } from './todo/todo.module';
 import { NotesModule } from './notes/notes.module';
-import { LoginHistoryModule } from './login-history/login-history.module';
+import { SessionsModule } from './sessions/sessions.module';
 
 @Module({
   imports: [
@@ -48,7 +48,7 @@ import { LoginHistoryModule } from './login-history/login-history.module';
     MessagesModule,
     TodoModule,
     NotesModule,
-    LoginHistoryModule,
+    SessionsModule,
   ],
   controllers: [AppController],
   providers: [

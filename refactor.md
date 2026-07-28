@@ -142,16 +142,16 @@ Sebelum menulis kode untuk fitur di bawah ini, wajib mematuhi standar berikut ag
 ### 2. Manajemen Sesi Pengguna (User Session Management)
 **Goal:** Give users transparency and control over their login history and connected devices, including the ability to remotely force-logout a device.
 
-- [ ] **Prisma Schema (`UserSession`):**
+- [x] **Prisma Schema (`UserSession`):**
   - Create model `UserSession` (combines login history + linked devices). Fields: `id`, `userId`, `sessionId` (unique), `ipAddress`, `userAgent`, `deviceName`, `location`, `status` (`SUCCESS`/`FAILED`), `isRevoked`, `loginAt`, `revokedAt`, `expiresAt`.
-- [ ] **Auth Flow Modifications:**
+- [x] **Auth Flow Modifications:**
   - On successful login (`auth.service.ts`): Generate unique `sessionId`, embed in JWT payload, save `UserSession` (`SUCCESS`), and store revocation status in Redis (`session:{sessionId}` -> revoked flag).
   - On failed login: Record attempt with `status: FAILED`.
-- [ ] **New Endpoints:**
+- [x] **New Endpoints:**
   - `GET /users/me/login-history`: Login history (success/failed) with pagination & filters.
   - `GET /users/me/devices`: List of active sessions.
   - `DELETE /users/me/devices/:sessionId`: Revoke specific session (force logout).
-- [ ] **`JwtAuthGuard` Modifications:**
+- [x] **`JwtAuthGuard` Modifications:**
   - After JWT validation, extract `sessionId`, check Redis (`session:{sessionId}` revoked?). Fall back to DB query if not in Redis. Throw `UnauthorizedException` (401) if revoked or expired.
 
 ---
